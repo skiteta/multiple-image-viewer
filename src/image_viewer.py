@@ -29,10 +29,6 @@ class Application(tk.Frame):
         self.scale = None
         self.slider = None
         self.create_widgets()
-        self.canvas1.bind("<ButtonPress-1>", self.start_point_get)
-        self.canvas1.bind("<Button1-Motion>", self.oval_drawing)
-        self.canvas1.bind("<Button2-Motion>", self.drag)
-        self.canvas1.bind("<ButtonRelease-1>", self.release_action)
         self.canvas1.bind("<KeyPress>", self.key_event)
         self.canvas1.focus_set()
 
@@ -155,61 +151,6 @@ class Application(tk.Frame):
                 for i in range(self.frame_num):
                     data = self.frame_data[i]
                     writer.writerow([data.get('frame_id'), data.get('x'), data.get('y'), data.get('radius')])
-
-    def start_point_get(self, event):
-        self.canvas1.delete("oval1")
-        self.oval = self.canvas1.create_oval(event.x, event.y, event.x + 1, event.y + 1, outline="red", tag="oval1")
-        self.start_x, self.start_y = event.x, event.y
-
-    def oval_drawing(self, event):
-        width, height = 960, 540
-        if event.x < 0:
-            cur_end_x = 0
-        else:
-            cur_end_x = min(width, event.x)
-        if event.y < 0:
-            cur_end_y = 0
-        else:
-            cur_end_y = min(height, event.y)
-        self.end_x, self.end_y = cur_end_x, cur_end_y
-        self.canvas1.coords("oval1", self.start_x, self.start_y, self.end_x, self.end_y)
-
-    def drag(self, event):
-        diff_x = event.x - self.start_x
-        diff_y = event.y - self.start_y
-        self.canvas1.move(
-            self.oval,
-            diff_x,
-            diff_y
-        )
-        self.start_x = event.x
-        self.start_y = event.y
-        self.end_x += diff_x
-        self.end_y += diff_y
-        self.canvas1.coords('oval1', self.start_x, self.start_y, self.end_x, self.end_y)
-        self.release_action(event)
-
-    def release_action(self, event):
-        start_x, start_y, end_x, end_y = [
-            round(n * 2) for n in self.canvas1.coords("oval1")
-        ]
-
-        if abs(start_x - end_x) == abs(start_y - end_y) == 2:
-            return
-
-        print(f'===== FRAME {self.current_id} COORDINATES =====')
-        print("start_x : " + str(start_x) + "\n" + "start_y : " +
-              str(start_y) + "\n" + "end_x : " + str(end_x) + "\n" +
-              "end_y : " + str(end_y))
-        x_center = start_x + abs(end_x - start_x) // 2
-        y_center = start_y + abs(end_y - start_y) // 2
-        radius = ((end_x - x_center) ** 2 + (end_y - y_center) ** 2) ** 0.5 // 2
-        self.frame_data[self.current_id] = {
-            'frame_id': self.current_id,
-            'x': x_center,
-            'y': y_center,
-            'radius': radius
-        }
 
 
 if __name__ == "__main__":
