@@ -42,7 +42,7 @@ class Application(tk.Frame):
         key = event.keysym
         if key == 'n':
             self.next_image()
-        elif key == 'b':
+        elif key == 'p':
             self.before_image()
         elif key == 's':
             self.save()
