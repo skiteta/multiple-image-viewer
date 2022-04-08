@@ -60,9 +60,6 @@ class Application(tk.Frame):
         before_button = ttk.Button(side_panel, text='before')
         before_button.configure(command=self.before_image)
         before_button.pack()
-        save_button = ttk.Button(side_panel, text='save')
-        save_button.configure(command=self.save)
-        save_button.pack()
         side_panel.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.slider = tk.Frame(self.master, borderwidth=2, relief=tk.SUNKEN)
@@ -138,19 +135,6 @@ class Application(tk.Frame):
             self.current_id -= 1
         print(f'===== FRAME {self.current_id} =====')
         self.canvas1.create_image(483, 273, image=self.images[self.current_id])
-
-    def save(self):
-        file = filedialog.asksaveasfilename(
-            title='Choose a file',
-            filetypes=[('CSV', 'csv')],
-            initialdir='./',
-            defaultextension='.csv')
-        if file:
-            with open(file, 'w', encoding='utf_8') as f:
-                writer = csv.writer(f)
-                for i in range(self.frame_num):
-                    data = self.frame_data[i]
-                    writer.writerow([data.get('frame_id'), data.get('x'), data.get('y'), data.get('radius')])
 
 
 if __name__ == "__main__":
