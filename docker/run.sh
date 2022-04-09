@@ -1,1 +1,0 @@
-docker run -v $HOME/development/multiple-image-viewer:/root/mnt/ -it --rm -m 32g -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix python3.7 /bin/bash
