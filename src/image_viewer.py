@@ -12,7 +12,7 @@ class Application(tk.Frame):
         self.pack()
 
         self.master.geometry("1060x610")
-        self.master.title("Annotator")
+        self.master.title("image viewer")
 
         self.canvas1 = None
         self.images = []
@@ -33,7 +33,7 @@ class Application(tk.Frame):
 
     def scroll(self, event):
         self.canvas1.focus_set()
-        self.current_id = int(self.scale_var.get())
+        self.current_id = int(self.scale_var.get() - 1)
         print(f'===== FRAME {self.current_id} =====')
         self.canvas1.create_image(483, 273, image=self.images[self.current_id])
 
@@ -80,7 +80,7 @@ class Application(tk.Frame):
                               from_=0,
                               to=0,
                               resolution=1,
-                              tickinterval=5)
+                              tickinterval=len(self.images) // 2)
         self.scale.pack()
         self.slider.pack(side=tk.BOTTOM, fill=tk.X)
 
@@ -139,10 +139,10 @@ class Application(tk.Frame):
                               length=930,
                               width=20,
                               sliderlength=10,
-                              from_=0,
-                              to=len(self.images) - 1,
+                              from_=1,
+                              to=len(self.images),
                               resolution=1,
-                              tickinterval=5)
+                              tickinterval=len(self.images) // 2)
         self.scale.pack()
 
     def next_image(self):
