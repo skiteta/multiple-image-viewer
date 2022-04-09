@@ -1,4 +1,3 @@
-import csv
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
@@ -51,15 +50,23 @@ class Application(tk.Frame):
 
     def create_widgets(self):
         side_panel = tk.Frame(self.master, borderwidth=2, relief=tk.SUNKEN)
-        open_button = ttk.Button(side_panel, text='load')
-        open_button.configure(command=self.load_image)
-        open_button.pack()
-        next_button = ttk.Button(side_panel, text='next')
+        button_width = 8
+        load_images_button = ttk.Button(side_panel, text='load images', width=button_width)
+        load_images_button.configure(command=self.load_images)
+        load_images_button.pack()
+
+        load_movie_button = ttk.Button(side_panel, text='load movie', width=button_width)
+        load_movie_button.configure(command=self.load_movie)
+        load_movie_button.pack()
+
+        next_button = ttk.Button(side_panel, text='next', width=button_width)
         next_button.configure(command=self.next_image)
         next_button.pack()
-        before_button = ttk.Button(side_panel, text='before')
+
+        before_button = ttk.Button(side_panel, text='before', width=button_width)
         before_button.configure(command=self.before_image)
         before_button.pack()
+
         side_panel.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.slider = tk.Frame(self.master, borderwidth=2, relief=tk.SUNKEN)
@@ -80,7 +87,20 @@ class Application(tk.Frame):
         self.canvas1 = tk.Canvas(self.master)
         self.canvas1.pack(expand=True, fill=tk.BOTH)
 
-    def load_image(self):
+    def load_images(self):
+        self.canvas1.focus_set()
+        self.current_id = 0
+        filenames = filedialog.askopenfilenames()
+        for filename in filenames:
+            image = cv2.imread(filename)
+            image = cv2.resize(image, (960, 540), interpolation=cv2.INTER_AREA)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_array = Image.fromarray(image_rgb)
+            tk_image = ImageTk.PhotoImage(image_array)
+            self.images.append(tk_image)
+        self.set_images()
+
+    def load_movie(self):
         self.canvas1.focus_set()
         self.current_id = 0
         filename = filedialog.askopenfilename()
@@ -100,6 +120,9 @@ class Application(tk.Frame):
                 self.images.append(tk_image)
             else:
                 break
+        self.set_images()
+
+    def set_images(self):
         self.frame_num = len(self.images)
         self.frame_data = {i: {
             'frame_id': i,
