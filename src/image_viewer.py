@@ -31,18 +31,30 @@ class Application(tk.Frame):
         self.canvas1.bind("<KeyPress>", self.key_event)
         self.canvas1.focus_set()
 
+    def next_image(self, event):
+        self.canvas1.focus_set()
+        if self.current_id < self.frame_num - 1:
+            self.current_id += 1
+        self.scroll(event)
+
+    def before_image(self, event):
+        self.canvas1.focus_set()
+        if self.current_id > 0:
+            self.current_id -= 1
+        self.scroll(event)
+
     def scroll(self, event):
         self.canvas1.focus_set()
-        self.current_id = int(self.scale_var.get() - 1)
+        # self.current_id = int(self.scale_var.get() - 1)
         print(f'===== FRAME {self.current_id} =====')
         self.canvas1.create_image(483, 273, image=self.images[self.current_id])
 
     def key_event(self, event):
         key = event.keysym
         if key == 'n':
-            self.next_image()
+            self.next_image(event)
         elif key == 'p':
-            self.before_image()
+            self.before_image(event)
         elif key == 's':
             self.save()
         elif key == 'l':
@@ -91,6 +103,7 @@ class Application(tk.Frame):
         self.canvas1.focus_set()
         self.current_id = 0
         filenames = filedialog.askopenfilenames()
+        self.images = []
         for filename in filenames:
             image = cv2.imread(filename)
             image = cv2.resize(image, (960, 540), interpolation=cv2.INTER_AREA)
@@ -104,6 +117,7 @@ class Application(tk.Frame):
         self.canvas1.focus_set()
         self.current_id = 0
         filename = filedialog.askopenfilename()
+        self.master.title(filename.split('/')[-1])
         cap = cv2.VideoCapture(filename)
         if not cap.isOpened():
             print("can not open this movie")
@@ -144,20 +158,6 @@ class Application(tk.Frame):
                               resolution=1,
                               tickinterval=len(self.images) // 2)
         self.scale.pack()
-
-    def next_image(self):
-        self.canvas1.focus_set()
-        if self.current_id < self.frame_num - 1:
-            self.current_id += 1
-        print(f'===== FRAME {self.current_id} =====')
-        self.canvas1.create_image(483, 273, image=self.images[self.current_id])
-
-    def before_image(self):
-        self.canvas1.focus_set()
-        if self.current_id > 0:
-            self.current_id -= 1
-        print(f'===== FRAME {self.current_id} =====')
-        self.canvas1.create_image(483, 273, image=self.images[self.current_id])
 
 
 if __name__ == "__main__":
