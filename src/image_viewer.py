@@ -35,18 +35,23 @@ class Application(tk.Frame):
         self.canvas1.focus_set()
         if self.current_id < self.frame_num - 1:
             self.current_id += 1
-        self.scroll(event)
+        self.scale_var.set(self.scale_var.get() + 1.0)
+        self.scroll(event, self.current_id)
 
     def before_image(self, event):
         self.canvas1.focus_set()
         if self.current_id > 0:
             self.current_id -= 1
-        self.scroll(event)
+        self.scale_var.set(self.scale_var.get() - 1.0)
+        self.scroll(event, self.current_id)
 
-    def scroll(self, event):
+    def scroll(self, event, scale_value=None):
         self.canvas1.focus_set()
-        # self.current_id = int(self.scale_var.get() - 1)
+        if scale_value is None:
+            scale_value = int(self.scale_var.get())
+        self.current_id = scale_value
         print(f'===== FRAME {self.current_id} =====')
+        self.canvas1.delete('all')
         self.canvas1.create_image(483, 273, image=self.images[self.current_id])
 
     def key_event(self, event):
@@ -153,8 +158,8 @@ class Application(tk.Frame):
                               length=930,
                               width=20,
                               sliderlength=10,
-                              from_=1,
-                              to=len(self.images),
+                              from_=0,
+                              to=len(self.images) - 1,
                               resolution=1,
                               tickinterval=len(self.images) // 2)
         self.scale.pack()
