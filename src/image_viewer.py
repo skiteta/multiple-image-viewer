@@ -14,7 +14,7 @@ class Application(tk.Frame):
         self.master.geometry("1060x610")
         self.master.title("image viewer")
 
-        self.canvas1 = None
+        self.canvas = None
         self.images = []
         self.start_x = None
         self.start_y = None
@@ -28,31 +28,31 @@ class Application(tk.Frame):
         self.scale = None
         self.slider = None
         self.create_widgets()
-        self.canvas1.bind("<KeyPress>", self.key_event)
-        self.canvas1.focus_set()
+        self.canvas.bind("<KeyPress>", self.key_event)
+        self.canvas.focus_set()
 
     def next_image(self, event):
-        self.canvas1.focus_set()
+        self.canvas.focus_set()
         if self.current_id < self.frame_num - 1:
             self.current_id += 1
         self.scale_var.set(self.scale_var.get() + 1.0)
         self.scroll(event, self.current_id)
 
     def before_image(self, event):
-        self.canvas1.focus_set()
+        self.canvas.focus_set()
         if self.current_id > 0:
             self.current_id -= 1
         self.scale_var.set(self.scale_var.get() - 1.0)
         self.scroll(event, self.current_id)
 
     def scroll(self, event, scale_value=None):
-        self.canvas1.focus_set()
+        self.canvas.focus_set()
         if scale_value is None:
             scale_value = int(self.scale_var.get())
         self.current_id = scale_value
         print(f'===== FRAME {self.current_id} =====')
-        self.canvas1.delete('all')
-        self.canvas1.create_image(483, 273, image=self.images[self.current_id])
+        self.canvas.delete('all')
+        self.canvas.create_image(483, 273, image=self.images[self.current_id])
 
     def key_event(self, event):
         key = event.keysym
@@ -101,11 +101,11 @@ class Application(tk.Frame):
         self.scale.pack()
         self.slider.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.canvas1 = tk.Canvas(self.master)
-        self.canvas1.pack(expand=True, fill=tk.BOTH)
+        self.canvas = tk.Canvas(self.master)
+        self.canvas.pack(expand=True, fill=tk.BOTH)
 
     def load_images(self):
-        self.canvas1.focus_set()
+        self.canvas.focus_set()
         self.current_id = 0
         filenames = filedialog.askopenfilenames()
         self.images = []
@@ -119,7 +119,7 @@ class Application(tk.Frame):
         self.set_images()
 
     def load_movie(self):
-        self.canvas1.focus_set()
+        self.canvas.focus_set()
         self.current_id = 0
         filename = filedialog.askopenfilename()
         self.master.title(filename.split('/')[-1])
@@ -149,7 +149,7 @@ class Application(tk.Frame):
             'y': None,
             'radius': None
         } for i in range(self.frame_num)}
-        self.canvas1.create_image(483, 273, image=self.images[self.current_id])
+        self.canvas.create_image(483, 273, image=self.images[self.current_id])
         self.scale.destroy()
         self.scale = tk.Scale(self.slider,
                               variable=self.scale_var,
